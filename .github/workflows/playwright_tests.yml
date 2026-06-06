@@ -13,7 +13,7 @@ env:
   FORCE_COLOR: 1
 
 jobs:
-  aureus_playwright_test:
+  metis_playwright_test:
     runs-on: ubuntu-latest
 
     strategy:
@@ -31,7 +31,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: aureuserp
+          MYSQL_DATABASE: metis
         ports:
           - 3306
         options: >-
@@ -89,7 +89,7 @@ jobs:
           sed -i "s|^\(DB_CONNECTION=\s*\).*$|\1mysql|" .env
           sed -i "s|^#\?\s*DB_PORT=.*|DB_PORT=${{ job.services.mysql.ports[3306] }}|" .env
           sed -i "s|^#\?\s*DB_HOST=.*|DB_HOST=127.0.0.1|" .env
-          sed -i "s|^#\?\s*DB_DATABASE=.*|DB_DATABASE=aureuserp|" .env
+          sed -i "s|^#\?\s*DB_DATABASE=.*|DB_DATABASE=metis|" .env
           sed -i "s|^#\?\s*DB_USERNAME=.*|DB_USERNAME=root|" .env
           sed -i "s|^#\?\s*DB_PASSWORD=.*|DB_PASSWORD=root|" .env
           sed -i "s|^\(APP_DEBUG=\s*\).*$|\1false|" .env
@@ -110,14 +110,14 @@ jobs:
           for i in {1..30}; do
             if mysqladmin ping -h 127.0.0.1 -P ${MYSQL_PORT} -u root -proot --silent 2>/dev/null; then
               echo "✅ MySQL is up on port ${MYSQL_PORT}!"
-              php -r "new PDO('mysql:host=127.0.0.1;port=${MYSQL_PORT};dbname=aureuserp', 'root', 'root');" && echo "✅ PHP can connect!" || echo "❌ PHP cannot connect"
+              php -r "new PDO('mysql:host=127.0.0.1;port=${MYSQL_PORT};dbname=metis', 'root', 'root');" && echo "✅ PHP can connect!" || echo "❌ PHP cannot connect"
               break
             fi
             echo "⏳ MySQL not ready yet... ($i/30)"
             sleep 3
           done
 
-      - name: Running Aureus Installer
+      - name: Running Metis Installer
         run: |
           php artisan erp:install \
             --force \
@@ -159,7 +159,7 @@ jobs:
   merge_playwright_reports:
     if: ${{ always() && !cancelled() }}
     needs:
-      - aureus_playwright_test
+      - metis_playwright_test
     runs-on: ubuntu-latest
     name: report
 

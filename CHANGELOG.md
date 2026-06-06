@@ -1,3 +1,7 @@
+## Metis Changelog
+
+This is the Metis fork. See upstream CHANGELOG for AureusERP history.
+
 # 🚀 CHANGELOG — v1.4.0
 
 ### 🧩 Features

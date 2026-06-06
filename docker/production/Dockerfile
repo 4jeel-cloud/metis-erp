@@ -3,7 +3,7 @@ FROM ubuntu:24.04
 ARG APP_REF=master
 ARG PHP_VERSION=8.4
 ARG NODE_VERSION=22
-ARG REPO_URL=https://github.com/aureuserp/aureuserp.git
+ARG REPO_URL=https://github.com/4jeel-cloud/aureuserp.git
 
 ARG ADMIN_NAME=Administrator
 ARG ADMIN_EMAIL=admin@example.com
@@ -70,7 +70,7 @@ RUN apt-get purge -y php${PHP_VERSION}-dev php-pear \
 
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
-WORKDIR /var/www/aureuserp
+WORKDIR /var/www/metis
 
 RUN git clone --depth 1 --branch ${APP_REF} ${REPO_URL} . \
     && composer install \
@@ -87,9 +87,9 @@ RUN cp .env.example .env \
     && sed -i 's/^CACHE_STORE=.*/CACHE_STORE=file/' .env \
     && sed -i 's/^# *DB_HOST=.*/DB_HOST=127.0.0.1/' .env \
     && sed -i 's/^# *DB_PORT=.*/DB_PORT=3306/' .env \
-    && sed -i 's/^# *DB_DATABASE=.*/DB_DATABASE=aureus/' .env \
-    && sed -i 's/^# *DB_USERNAME=.*/DB_USERNAME=aureus/' .env \
-    && sed -i 's/^# *DB_PASSWORD=.*/DB_PASSWORD=aureus/' .env \
+    && sed -i 's/^# *DB_DATABASE=.*/DB_DATABASE=metis/' .env \
+    && sed -i 's/^# *DB_USERNAME=.*/DB_USERNAME=metis/' .env \
+    && sed -i 's/^# *DB_PASSWORD=.*/DB_PASSWORD=metis/' .env \
     && sed -i 's|^APP_URL=.*|APP_URL=http://localhost|' .env
 
 RUN npm ci --no-audit --no-fund \
@@ -110,18 +110,18 @@ RUN chmod +x /tmp/build-install.sh \
 
 RUN sed -i 's/^APP_ENV=.*/APP_ENV=production/' .env
 
-COPY php.ini /etc/php/${PHP_VERSION}/fpm/conf.d/99-aureus.ini
-COPY php.ini /etc/php/${PHP_VERSION}/cli/conf.d/99-aureus.ini
+COPY php.ini /etc/php/${PHP_VERSION}/fpm/conf.d/99-metis.ini
+COPY php.ini /etc/php/${PHP_VERSION}/cli/conf.d/99-metis.ini
 COPY php-fpm.conf /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
 
 RUN rm -f /etc/nginx/sites-enabled/default /etc/nginx/conf.d/default.conf
-COPY nginx.conf /etc/nginx/conf.d/aureus.conf
+COPY nginx.conf /etc/nginx/conf.d/metis.conf
 
-COPY supervisord.conf /etc/supervisor/conf.d/aureus.conf
+COPY supervisord.conf /etc/supervisor/conf.d/metis.conf
 
-RUN mkdir -p /run/php /var/log/supervisor /var/log/aureus
+RUN mkdir -p /run/php /var/log/supervisor /var/log/metis
 
-RUN chown -R www-data:www-data /var/www/aureuserp /var/log/aureus \
+RUN chown -R www-data:www-data /var/www/metis /var/log/metis \
     && chmod -R 775 storage bootstrap/cache \
     && find storage bootstrap/cache -type d -exec chmod g+s {} +
 

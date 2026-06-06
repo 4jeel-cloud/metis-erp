@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       app_ref:
-        description: 'AureusERP branch or tag to build'
+        description: 'Metis branch or tag to build'
         required: false
         default: 'master'
       image_tag:
@@ -16,7 +16,7 @@ on:
         default: 'manual'
 
 env:
-  IMAGE_NAME: webkul/aureuserp
+  IMAGE_NAME: metis
   BUILD_CONTEXT: docker/production
 
 jobs:
@@ -97,8 +97,8 @@ jobs:
           cache-to: type=gha,mode=max
           provenance: false
           labels: |
-            org.opencontainers.image.title=AureusERP
-            org.opencontainers.image.description=AureusERP production image — Nginx + PHP-FPM + MySQL + Supervisor
+            org.opencontainers.image.title=Metis
+            org.opencontainers.image.description=Metis production image — Nginx + PHP-FPM + MySQL + Supervisor
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.version=${{ steps.meta.outputs.version }}
             org.opencontainers.image.revision=${{ github.sha }}

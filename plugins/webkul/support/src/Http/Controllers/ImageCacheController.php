@@ -20,7 +20,7 @@ class ImageCacheController
      *
      * @var string
      */
-    const AUREUS_LOGO = 'https://updates.aureuserp.com/aureus.png';
+    const LOGO_PATH = 'images/logo-light.png';
 
     /**
      * Get HTTP response of template applied image file
@@ -31,8 +31,8 @@ class ImageCacheController
     public function getImage($filename)
     {
         try {
-            $content = Cache::remember('aureus-logo', 10080, function () {
-                return base64_encode($this->getImageFromUrl(self::AUREUS_LOGO));
+            $content = Cache::remember('metis-logo', 10080, function () {
+                return base64_encode(file_get_contents(public_path(self::LOGO_PATH)));
             });
         } catch (Exception $e) {
             $content = '';

@@ -69,7 +69,7 @@ class InstallERP extends Command
 
         $this->markAsInstalled();
 
-        Event::dispatch('aureus.installed');
+        Event::dispatch('metis.installed');
 
         $this->info('🎉 ERP System installation completed successfully!');
     }
@@ -90,7 +90,7 @@ class InstallERP extends Command
     protected function handleReinstallation(): bool
     {
         $this->newLine();
-        $this->error('⚠️  WARNING: AUREIUS ERP IS ALREADY INSTALLED!');
+        $this->error('⚠️  WARNING: METIS IS ALREADY INSTALLED!');
         $this->newLine();
         $this->warn('🚨 DANGER ZONE 🚨');
         $this->warn('Proceeding with reinstallation will:');
@@ -153,7 +153,7 @@ class InstallERP extends Command
         $filePath = storage_path('installed');
 
         $content = sprintf(
-            "AureusERP is successfully installed.\nInstalled at: %s",
+            "Metis is successfully installed.\nInstalled at: %s",
             now()->toDateTimeString(),
         );
 
@@ -356,7 +356,7 @@ class InstallERP extends Command
             return;
         }
 
-        $repoUrl = 'https://github.com/aureuserp/aureuserp';
+        $repoUrl = 'https://github.com/4jeel-cloud/aureuserp';
 
         if (PHP_OS_FAMILY == 'Darwin') {
             exec("open {$repoUrl}");

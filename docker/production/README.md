@@ -1,11 +1,11 @@
-# AureusERP — Production Docker Image
+# Metis — Production Docker Image
 
 A single-container, production-ready Docker image for
-[AureusERP](https://github.com/aureuserp/aureuserp). It bundles the application,
+[Metis](https://github.com/4jeel-cloud/aureuserp). It bundles the application,
 MySQL, PHP-FPM, Nginx and Supervisor — everything needed to run the ERP with one
 `docker run`.
 
-AureusERP is **fully installed at build time** (migrations, seeders, roles &
+Metis is **fully installed at build time** (migrations, seeders, roles &
 permissions, admin user), so the container boots ready to use.
 
 > This is the **production** image. For local development use Laravel Sail via
@@ -40,7 +40,7 @@ permissions, admin user), so the container boots ready to use.
 | PHP | 8.4 FPM — bcmath, curl, exif, gd, gmp, intl, mbstring, mysql, soap, xml, zip, imagick |
 | Database | MySQL 8.0 (internal, pre-installed) |
 | Process manager | Supervisor — `mysql` · `php-fpm` · `nginx` · queue worker · scheduler |
-| Application path | `/var/www/aureuserp` |
+| Application path | `/var/www/metis` |
 
 The image runs in one of two database modes:
 
@@ -57,7 +57,7 @@ docker/production/
 ├── .dockerignore       # build-context exclusions
 ├── build-install.sh    # build-time install — migrates, seeds, bakes the MySQL data dir
 ├── entrypoint.sh       # runtime — applies env overrides, refreshes caches, starts Supervisor
-├── mysql-init.sql      # creates the internal `aureus` database and user
+├── mysql-init.sql      # creates the internal `metis` database and user
 ├── nginx.conf          # virtual host
 ├── php.ini             # PHP / OPcache tuning
 ├── php-fpm.conf        # PHP-FPM pool
@@ -74,12 +74,12 @@ image always builds **committed** code. Releases are automated via
 Pull and run the published image:
 
 ```bash
-docker pull webkul/aureuserp:latest
+docker pull metis:latest
 
-docker run -d --name aureuserp -p 80:80 \
-  -v aureus-mysql:/var/lib/mysql \
-  -v aureus-storage:/var/www/aureuserp/storage \
-  webkul/aureuserp:latest
+docker run -d --name metis -p 80:80 \
+  -v metis-mysql:/var/lib/mysql \
+  -v metis-storage:/var/www/metis/storage \
+  metis:latest
 ```
 
 Then open <http://localhost>. To use a different host port, change `-p`, e.g.
@@ -91,11 +91,11 @@ The build context is the `docker/production/` directory. Build from the
 repository root:
 
 ```bash
-# default — clones aureuserp/aureuserp @ master
-docker build -t aureuserp:latest docker/production
+# default — clones 4jeel-cloud/aureuserp @ master
+docker build -t metis:latest docker/production
 
 # a specific branch or tag
-docker build -t aureuserp:1.0.0 \
+docker build -t metis:1.0.0 \
   --build-arg APP_REF=v1.0.0 \
   docker/production
 ```
@@ -107,8 +107,8 @@ assets, and installs the ERP — it takes several minutes.
 
 | Argument | Default | Description |
 |---|---|---|
-| `APP_REF` | `master` | Branch or tag of AureusERP to clone |
-| `REPO_URL` | `https://github.com/aureuserp/aureuserp.git` | Repository to clone |
+| `APP_REF` | `master` | Branch or tag of Metis to clone |
+| `REPO_URL` | `https://github.com/4jeel-cloud/aureuserp.git` | Repository to clone |
 | `PHP_VERSION` | `8.4` | PHP version |
 | `NODE_VERSION` | `22` | Node.js version (used only to compile assets) |
 | `ADMIN_NAME` | `Administrator` | Admin account name created at install |
@@ -119,26 +119,26 @@ assets, and installs the ERP — it takes several minutes.
 
 ```bash
 # basic
-docker run -d --name aureuserp -p 80:80 aureuserp:latest
+docker run -d --name metis -p 80:80 metis:latest
 
 # different host port
-docker run -d --name aureuserp -p 8080:80 aureuserp:latest
+docker run -d --name metis -p 8080:80 metis:latest
 
 # foreground (stream logs, no -d)
-docker run --name aureuserp -p 80:80 aureuserp:latest
+docker run --name metis -p 80:80 metis:latest
 
 # with environment overrides
-docker run -d --name aureuserp -p 80:80 \
+docker run -d --name metis -p 80:80 \
   -e APP_URL=https://erp.example.com \
   -e APP_NAME="My Company ERP" \
   -e APP_TIMEZONE=Asia/Kolkata \
-  aureuserp:latest
+  metis:latest
 
 # with persistent named volumes (recommended)
-docker run -d --name aureuserp -p 80:80 \
-  -v aureus-mysql:/var/lib/mysql \
-  -v aureus-storage:/var/www/aureuserp/storage \
-  aureuserp:latest
+docker run -d --name metis -p 80:80 \
+  -v metis-mysql:/var/lib/mysql \
+  -v metis-storage:/var/www/metis/storage \
+  metis:latest
 ```
 
 ## Access & default credentials
@@ -165,7 +165,7 @@ See [Build arguments](#build-arguments) above — `APP_REF`, `REPO_URL`,
 |---|---|---|
 | `APP_ENV` | `production` | `production` forces URLs to HTTPS; `local` serves over HTTP — see [HTTP vs HTTPS](#http-vs-https) |
 | `APP_DEBUG` | `false` | Detailed error pages when `true` — keep `false` in production |
-| `APP_NAME` | `AureusERP` | Application name |
+| `APP_NAME` | `Metis` | Application name |
 | `APP_URL` | `http://localhost` | Public base URL |
 | `APP_KEY` | _baked_ | Encryption key — override to pin a stable key |
 | `APP_LOCALE` | `en` | Default locale |
@@ -173,21 +173,21 @@ See [Build arguments](#build-arguments) above — `APP_REF`, `REPO_URL`,
 | `APP_TIMEZONE` | `UTC` | Application timezone |
 | `DB_HOST` | `127.0.0.1` | Database host — see [Database modes](#database-modes) |
 | `DB_PORT` | `3306` | Database port |
-| `DB_DATABASE` | `aureus` | Database name |
-| `DB_USERNAME` | `aureus` | Database user |
-| `DB_PASSWORD` | `aureus` | Database password |
+| `DB_DATABASE` | `metis` | Database name |
+| `DB_USERNAME` | `metis` | Database user |
+| `DB_PASSWORD` | `metis` | Database password |
 
 ## HTTP vs HTTPS
 
-AureusERP forces every generated URL to `https` when `APP_ENV=production` (the
+Metis forces every generated URL to `https` when `APP_ENV=production` (the
 default — correct for a live site behind TLS). For **local testing over plain
 HTTP**, run with `APP_ENV=local`:
 
 ```bash
-docker run -d --name aureuserp -p 8080:80 \
+docker run -d --name metis -p 8080:80 \
   -e APP_ENV=local \
   -e APP_URL=http://localhost:8080 \
-  aureuserp:latest
+  metis:latest
 ```
 
 The image has no built-in TLS — terminate HTTPS at a reverse proxy or load
@@ -206,23 +206,23 @@ Set `DB_HOST` to a non-local address; the internal MySQL then stays off and the
 entrypoint waits up to 60 s for the external server.
 
 ```bash
-docker run -d --name aureuserp -p 80:80 \
-  -v aureus-storage:/var/www/aureuserp/storage \
+docker run -d --name metis -p 80:80 \
+  -v metis-storage:/var/www/metis/storage \
   -e DB_HOST=db.example.com \
   -e DB_PORT=3306 \
-  -e DB_DATABASE=aureus \
-  -e DB_USERNAME=aureus \
+  -e DB_DATABASE=metis \
+  -e DB_USERNAME=metis \
   -e DB_PASSWORD=a-strong-password \
   -e APP_URL=https://erp.example.com \
-  aureuserp:latest
+  metis:latest
 ```
 
 Create the database and user on the external server first:
 
 ```sql
-CREATE DATABASE aureus CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'aureus'@'%' IDENTIFIED BY 'a-strong-password';
-GRANT ALL PRIVILEGES ON aureus.* TO 'aureus'@'%';
+CREATE DATABASE metis CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'metis'@'%' IDENTIFIED BY 'a-strong-password';
+GRANT ALL PRIVILEGES ON metis.* TO 'metis'@'%';
 FLUSH PRIVILEGES;
 ```
 
@@ -230,7 +230,7 @@ An external database is **not pre-installed**. Run the installer against it once
 (`APP_ENV` is overridden so the production guard does not block the migrations):
 
 ```bash
-docker exec -e APP_ENV=local aureuserp \
+docker exec -e APP_ENV=local metis \
   php artisan erp:install --force --no-interaction \
   --admin-name=Administrator \
   --admin-email=admin@example.com \
@@ -246,8 +246,8 @@ installed data).
 
 | Volume | Container path | Purpose |
 |---|---|---|
-| `aureus-mysql` | `/var/lib/mysql` | Database files |
-| `aureus-storage` | `/var/www/aureuserp/storage` | Uploads, logs, sessions, app state |
+| `metis-mysql` | `/var/lib/mysql` | Database files |
+| `metis-storage` | `/var/www/metis/storage` | Uploads, logs, sessions, app state |
 
 Without volumes the container is ephemeral — all data is lost on `docker rm`.
 
@@ -263,7 +263,7 @@ is baked into the image, so the container boots instantly with no setup.
 1. Detects internal vs. external database mode from `DB_HOST`.
 2. Applies environment overrides (`APP_*`, `DB_*`) to `.env`.
 3. In external mode, waits for the external database.
-4. Caches config and views; leaves routes dynamic (AureusERP registers plugin
+4. Caches config and views; leaves routes dynamic (Metis registers plugin
    routes from the database, so route caching is intentionally not used).
 5. Hands off to Supervisor, which starts `mysql`, `php-fpm`, `nginx`, the queue
    worker and the scheduler.
@@ -272,14 +272,14 @@ is baked into the image, so the container boots instantly with no setup.
 
 The image runs on both **`amd64`** and **`arm64`** — every base image and
 package source supports both. Published images on Docker Hub
-(`webkul/aureuserp`) are multi-arch, so `docker pull` / `docker run` selects the
+(`metis`) are multi-arch, so `docker pull` / `docker run` selects the
 right architecture automatically.
 
 To build a multi-arch image yourself:
 
 ```bash
 docker buildx build --platform linux/amd64,linux/arm64 \
-  -t webkul/aureuserp:latest --push docker/production
+  -t metis:latest --push docker/production
 ```
 
 A multi-arch image must be pushed to a registry — the local Docker daemon cannot
@@ -291,51 +291,51 @@ The image is immutable (`opcache.validate_timestamps=0`), so a new version means
 a new image:
 
 ```bash
-docker pull webkul/aureuserp:latest        # or rebuild locally
-docker stop aureuserp && docker rm aureuserp
-docker run -d --name aureuserp -p 80:80 \
-  -v aureus-mysql:/var/lib/mysql \
-  -v aureus-storage:/var/www/aureuserp/storage \
-  webkul/aureuserp:latest
+docker pull metis:latest        # or rebuild locally
+docker stop metis && docker rm metis
+docker run -d --name metis -p 80:80 \
+  -v metis-mysql:/var/lib/mysql \
+  -v metis-storage:/var/www/metis/storage \
+  metis:latest
 ```
 
-When the `aureus-mysql` volume is reused, apply any new migrations:
+When the `metis-mysql` volume is reused, apply any new migrations:
 
 ```bash
-docker exec aureuserp php artisan migrate --force
+docker exec metis php artisan migrate --force
 ```
 
 Back up the database volume before upgrading:
 
 ```bash
-docker run --rm -v aureus-mysql:/data -v "$(pwd)":/backup alpine \
-  tar czf /backup/aureus-mysql-backup.tar.gz /data
+docker run --rm -v metis-mysql:/data -v "$(pwd)":/backup alpine \
+  tar czf /backup/metis-mysql-backup.tar.gz /data
 ```
 
 ## Common commands
 
 ```bash
 # logs
-docker logs aureuserp
-docker logs -f --tail 100 aureuserp
+docker logs metis
+docker logs -f --tail 100 metis
 
 # shell
-docker exec -it aureuserp bash
+docker exec -it metis bash
 
 # service status / restart
-docker exec aureuserp supervisorctl status
-docker exec aureuserp supervisorctl restart nginx
+docker exec metis supervisorctl status
+docker exec metis supervisorctl restart nginx
 
 # artisan
-docker exec aureuserp php artisan about
-docker exec aureuserp php artisan migrate --force
+docker exec metis php artisan about
+docker exec metis php artisan migrate --force
 
 # stop / remove
-docker stop aureuserp
-docker rm aureuserp
+docker stop metis
+docker rm metis
 
 # wipe persistent data
-docker volume rm aureus-mysql aureus-storage
+docker volume rm metis-mysql metis-storage
 ```
 
 ## Health check
@@ -348,11 +348,11 @@ status with `docker ps` or `docker inspect`.
 | Symptom | Cause & fix |
 |---|---|
 | Port 80 already in use | Run with `-p 8080:80`; find the conflict with `sudo lsof -i :80` |
-| Container exits / MySQL won't start | A corrupt `aureus-mysql` volume — recreate it: `docker volume rm aureus-mysql` |
+| Container exits / MySQL won't start | A corrupt `metis-mysql` volume — recreate it: `docker volume rm metis-mysql` |
 | `404` on a `.js`/asset that should work, "from disk cache" | A stale browser cache — hard-reload (Ctrl/Cmd+Shift+R) or use a private window |
 | HTTPS redirect on local HTTP | Run with `-e APP_ENV=local` — see [HTTP vs HTTPS](#http-vs-https) |
 | External DB connection fails | Verify the server is reachable and the database/user exist; for a DB on the host use `host.docker.internal` |
-| Services not running | `docker exec aureuserp supervisorctl status`; restart with `supervisorctl restart <name>` |
+| Services not running | `docker exec metis supervisorctl status`; restart with `supervisorctl restart <name>` |
 | Queue worker restarts at cold start | Expected for a few seconds until MySQL is ready — Supervisor retries automatically |
 | `mysqld` fails to initialise during build | Some hosts enforce AppArmor on `mysqld`; build on a host without that restriction |
 
@@ -362,7 +362,7 @@ status with `docker ps` or `docker inspect`.
 `APP_ENV`, `APP_DEBUG`, app URL, name, locale, currency, timezone, encryption
 key.
 
-**Set at build time** (build arguments): AureusERP ref, repository, PHP version,
+**Set at build time** (build arguments): Metis ref, repository, PHP version,
 Node version, admin account. Service configs (`nginx.conf`, `php.ini`,
 `php-fpm.conf`, `supervisord.conf`) are baked — mount a replacement file over the
 target path to change one.
@@ -375,7 +375,5 @@ target path to change one.
 
 ## Support
 
-- Issues: <https://github.com/aureuserp/aureuserp/issues>
-- Forum: <https://forums.aureuserp.com>
-- Docs: <https://devdocs.aureuserp.com>
-- Source: <https://github.com/aureuserp/aureuserp>
+- Issues: <https://github.com/4jeel-cloud/aureuserp/issues>
+- Source: <https://github.com/4jeel-cloud/aureuserp>

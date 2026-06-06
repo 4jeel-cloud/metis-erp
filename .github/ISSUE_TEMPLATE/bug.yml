@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report a general issue or unexpected behavior in Aureuserp.
+description: Report a general issue or unexpected behavior in Metis.
 labels: ["Bug"]
 
 body:
@@ -9,14 +9,14 @@ body:
       label: ✅ Prerequisites
       description: Please ensure the following before submitting the issue.
       options:
-        - label: I have searched for [existing issues](https://github.com/aureuserp/aureuserp/issues) and confirm that this bug has not already been reported.
+        - label: I have searched for [existing issues](https://github.com/4jeel-cloud/aureuserp/issues) and confirm that this bug has not already been reported.
           required: true
 
   - type: input
     id: versioninput
     attributes:
-      label: 🧩 Aureuserp Version(s) Affected
-      description: Specify the Aureuserp version(s) where the issue occurs.
+      label: 🧩 Metis Version(s) Affected
+      description: Specify the Metis version(s) where the issue occurs.
       placeholder: "e.g., v1.1.0"
     validations:
       required: true

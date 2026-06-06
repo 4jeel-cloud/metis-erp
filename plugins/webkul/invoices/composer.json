@@ -3,8 +3,9 @@
     "description": "Invoice generation and management",
     "authors": [
         {
-            "name": "Aureus ERP",
-            "email": "support@aureuserp.in"
+            "name": "Metis",
+            "email": "ajeelajeel99@gmail.com",
+            "role": "Author"
         }
     ],
     "extra": {

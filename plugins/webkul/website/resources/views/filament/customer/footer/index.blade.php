@@ -86,11 +86,11 @@
 			<!-- Copyright Section -->
 			<div class="flex flex-col justify-between pt-8 mt-8 border-t border-gray-200 md:flex-row {{ app()->getLocale() === 'ar' ? 'md:flex-row-reverse' : '' }}">
 				<div class="text-sm text-gray-600">
-					{{ __('website::filament/app.footer.copyright') }} © <a href="https://aureuserp.com/" class="text-primary-500" target="_blank">AureusERP</a>
+					{{ __('website::filament/app.footer.copyright') }} © {{ config('app.name') }}
 				</div>
 
 				<div class="mt-2 text-sm text-gray-600 md:mt-0">
-					{{ __('website::filament/app.footer.powered_by') }} : <a href="https://webkul.com/" class="text-primary-500" target="_blank">Webkul Software</a>
+					{{ __('website::filament/app.footer.powered_by') }} : Metis
 				</div>
 			</div>
 		</div>

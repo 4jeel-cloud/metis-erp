@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>AureusERP API Documentation</title>
+    <title>Metis API Documentation</title>
     <meta charset="utf-8"/>
     <meta
         name="viewport"

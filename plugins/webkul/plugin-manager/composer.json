@@ -1,10 +1,11 @@
 {
     "name": "webkul/plugin-manager",
-    "description": "Plugin Manager for Aureus ERP",
+    "description": "Plugin Manager",
     "authors": [
         {
-            "name": "Aureus ERP",
-            "email": "support@aureuserp.in"
+            "name": "Metis",
+            "email": "ajeelajeel99@gmail.com",
+            "role": "Author"
         }
     ],
     "extra": {

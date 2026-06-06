@@ -1,7 +1,7 @@
 {
-    "name": "aureuserp/aureuserp",
+    "name": "4jeel-cloud/aureuserp",
     "type": "project",
-    "description": "Open Source ERP Solution built on Laravel for Small and Medium Enterprises (SMEs) and large-scale enterprises.",
+    "description": "Metis ERP — Open Source Enterprise Resource Planning Solution built on Laravel.",
     "keywords": [
         "erp",
         "laravel",
@@ -98,9 +98,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "support": {
-        "issues": "https://github.com/aureuserp/aureuserp/issues",
-        "forum": "https://forums.aureuserp.com",
-        "source": "https://github.com/aureuserp/aureuserp",
-        "docs": "https://devdocs.aureuserp.com"
+        "issues": "https://github.com/4jeel-cloud/aureuserp/issues",
+        "source": "https://github.com/4jeel-cloud/aureuserp"
     }
 }

@@ -1,20 +1,14 @@
 <p align="center">
-  <a href="https://aureuserp.com">
+  <a href="https://github.com/4jeel-cloud/aureuserp">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/aureuserp/temp-media/master/aureus-logo-dark.png">
-      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/aureuserp/temp-media/master/aureus-logo-light.png">
-      <img src="https://raw.githubusercontent.com/aureuserp/temp-media/master/aureus-logo-light.png" alt="AureusERP logo">
+      <source media="(prefers-color-scheme: dark)" srcset="images/logo-full-dark.svg">
+      <source media="(prefers-color-scheme: light)" srcset="images/logo-full-light.svg">
+      <img src="images/logo-full-light.svg" alt="Metis ERP logo" width="200">
     </picture>
   </a>  
 </p>
 
-<p align="center">
-<a href="https://packagist.org/packages/aureuserp/aureuserp"><img src="https://poser.pugx.org/aureuserp/aureuserp/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/aureuserp/aureuserp"><img src="https://poser.pugx.org/aureuserp/aureuserp/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/aureuserp/aureuserp"><img src="https://poser.pugx.org/aureuserp/aureuserp/license.svg" alt="License"></a>
-</p>
-
-<h1 align="center">Aureus ERP</h1>
+<h1 align="center">Metis ERP</h1>
 
 <p align="center">
   <strong>Open-Source Enterprise Resource Planning for Modern Businesses</strong>
@@ -30,7 +24,7 @@
 
 1. [Introduction](#-introduction)
 2. [Key Features](#-key-features)
-3. [Why Choose Aureus ERP?](#-why-choose-aureus-erp)
+3. [Why Choose Metis ERP?](#-why-choose-metis-erp)
 4. [Requirements](#-requirements)
 5. [Quick Start](#-quick-start)
 6. [Plugin System](#-plugin-system)
@@ -45,9 +39,9 @@
 
 ## 🚀 Introduction
 
-Aureus ERP is a comprehensive, open-source Enterprise Resource Planning (ERP) solution designed for Small and Medium Enterprises (SMEs) and large-scale organizations. Built on **[Laravel 13](https://laravel.com)**, the most popular PHP framework, and **[FilamentPHP 5](https://filamentphp.com)**, a cutting-edge admin panel framework, Aureus ERP offers an extensible and developer-friendly platform for managing every aspect of your business operations.
+Metis ERP is a comprehensive, open-source Enterprise Resource Planning (ERP) solution designed for Small and Medium Enterprises (SMEs) and large-scale organizations. Built on **[Laravel 13](https://laravel.com)**, the most popular PHP framework, and **[FilamentPHP 5](https://filamentphp.com)**, a cutting-edge admin panel framework, Metis ERP offers an extensible and developer-friendly platform for managing every aspect of your business operations.
 
-Whether you're managing accounting, inventory, HR, CRM, or projects, Aureus ERP provides a modular approach that grows with your business.
+Whether you're managing accounting, inventory, HR, CRM, or projects, Metis ERP provides a modular approach that grows with your business.
 
 ---
 
@@ -65,7 +59,7 @@ Whether you're managing accounting, inventory, HR, CRM, or projects, Aureus ERP 
 
 ---
 
-## 🎯 Why Choose Aureus ERP?
+## 🎯 Why Choose Metis ERP?
 
 | Feature | Benefit |
 |---------|---------|
@@ -102,12 +96,12 @@ Ensure your development environment meets the following requirements:
 
 ## ⚡ Quick Start
 
-Get Aureus ERP up and running in just 4 simple steps:
+Get Metis ERP up and running in just 4 simple steps:
 
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/aureuserp/aureuserp.git
+git clone https://github.com/4jeel-cloud/aureuserp.git
 cd aureuserp
 ```
 
@@ -143,7 +137,7 @@ Visit `http://localhost:8000` and log in with your admin credentials!
 
 ## 🧩 Plugin System
 
-AureusERP features a powerful modular plugin system that allows you to customize your ERP installation based on your business needs. Choose only the modules you need to keep your system lean and efficient.
+Metis ERP features a powerful modular plugin system that allows you to customize your ERP installation based on your business needs. Choose only the modules you need to keep your system lean and efficient.
 
 ### 📦 Core Plugins (System Plugins)
 
@@ -260,7 +254,7 @@ Some plugins require other plugins to function properly. The installation system
 
 ## 🎨 Customization
 
-AureusERP is designed to be highly customizable, allowing you to tailor the system to your specific business needs:
+Metis ERP is designed to be highly customizable, allowing you to tailor the system to your specific business needs:
 
 ### Plugin Customization
 - 🔹 Install only the plugins you need
@@ -292,7 +286,7 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 
 1. **Fork the Repository**
    ```bash
-   git clone https://github.com/aureuserp/aureuserp.git
+   git clone https://github.com/4jeel-cloud/aureuserp.git
    ```
 
 2. **Create a Feature Branch**
@@ -330,7 +324,7 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 
 ## 📄 License
 
-AureusERP is truly open-source ERP framework that will always be **free** under the [MIT License](LICENSE).
+Metis ERP is truly open-source ERP framework that will always be **free** under the [MIT License](LICENSE).
 
 ### What This Means
 - ✅ Free to use for commercial and personal projects
@@ -342,15 +336,15 @@ AureusERP is truly open-source ERP framework that will always be **free** under 
 
 ## 🔒 Security
 
-Security is a top priority for AureusERP. We take all security vulnerabilities seriously.
+Security is a top priority for Metis ERP. We take all security vulnerabilities seriously.
 
 ### Reporting Security Vulnerabilities
 
 **⚠️ Please DO NOT disclose security vulnerabilities publicly.**
 
-If you discover a security vulnerability in AureusERP, please report it responsibly:
+If you discover a security vulnerability in Metis ERP, please report it by opening an issue on our GitHub repository:
 
-📧 **Email:** support@webkul.com
+🐛 **Issue Tracker:** [GitHub Issues](https://github.com/4jeel-cloud/aureuserp/issues)
 
 ### What to Include
 - Description of the vulnerability
@@ -358,22 +352,16 @@ If you discover a security vulnerability in AureusERP, please report it responsi
 - Potential impact assessment
 - Suggested fix (if available)
 
-We will acknowledge your email within 48 hours and provide a detailed response within 7 days, including our assessment and a timeline for a fix.
+We will acknowledge your report within 48 hours and provide a detailed response within 7 days, including our assessment and a timeline for a fix.
 
 ---
 
 ## 💬 Support & Community
 
-Need help or want to connect with other AureusERP users?
-
-### 📚 Documentation
-- 📖 **Developer Documentation:** [devdocs.aureuserp.com](https://devdocs.aureuserp.com/) - Technical guides, API references, and development resources
-- 📘 **User Guide:** [docs.aureuserp.com](https://docs.aureuserp.com/) - Step-by-step tutorials and user manuals
+Need help or want to connect with other Metis ERP users?
 
 ### 🤝 Get Support
-- 💬 **Community Forum:** [Coming Soon] - Connect with other users and share experiences
-- 🐛 **Issue Tracker:** [GitHub Issues](https://github.com/aureuserp/aureuserp/issues) - Report bugs and request features
-- 📧 **Email Support:** support@webkul.com - Direct support from the team
+- 🐛 **Issue Tracker:** [GitHub Issues](https://github.com/4jeel-cloud/aureuserp/issues) - Report bugs and request features
 
 ### 🔔 Stay Updated
 - ⭐ **Star** this repository to show your support
@@ -384,7 +372,7 @@ Need help or want to connect with other AureusERP users?
 
 <div align="center">
 
-Made with ❤️ by [Webkul](https://webkul.com)
+Made with ❤️
 
 [⬆ Back to Top](#-table-of-contents)
 
