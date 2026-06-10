@@ -1,9 +1,9 @@
 <p align="center">
   <a href="https://github.com/4jeel-cloud/aureuserp">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="images/logo-dark.png">
-      <source media="(prefers-color-scheme: light)" srcset="images/logo-light.png">
-      <img src="images/logo-light.png" alt="Metis ERP logo" width="350">
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/4jeel-cloud/metis-erp/master/public/images/logo-dark.png">
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/4jeel-cloud/metis-erp/master/public/images/logo-light.png">
+      <img src="https://raw.githubusercontent.com/4jeel-cloud/metis-erp/master/public/images/logo-light.png" alt="Metis ERP logo" width="350">
     </picture>
   </a>  
 </p>
