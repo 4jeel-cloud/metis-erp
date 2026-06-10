@@ -1,9 +1,9 @@
 <p align="center">
   <a href="https://github.com/4jeel-cloud/aureuserp">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="images/logo-full-dark.svg">
-      <source media="(prefers-color-scheme: light)" srcset="images/logo-full-light.svg">
-      <img src="images/logo-full-light.svg" alt="Metis ERP logo" width="200">
+      <source media="(prefers-color-scheme: dark)" srcset="images/logo-full-dark.png">
+      <source media="(prefers-color-scheme: light)" srcset="images/logo-full-light.png">
+      <img src="images/logo-full-light.png" alt="Metis ERP logo" width="350">
     </picture>
   </a>  
 </p>

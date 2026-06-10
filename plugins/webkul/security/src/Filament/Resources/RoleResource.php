@@ -4,6 +4,7 @@ namespace Webkul\Security\Filament\Resources;
 
 use BackedEnum;
 use BezhanSalleh\FilamentShield\Facades\FilamentShield;
+use UnitEnum;
 use BezhanSalleh\FilamentShield\Resources\Roles\RoleResource as RolesRoleResource;
 use BezhanSalleh\FilamentShield\Support\Utils;
 use Filament\Actions\DeleteAction;
@@ -43,6 +44,8 @@ class RoleResource extends RolesRoleResource
 
     protected static ?int $navigationSort = 1;
 
+    protected static UnitEnum|string|null $navigationGroup = 'Settings';
+
     protected static bool $isGloballySearchable = false;
 
     protected static $permissionsCollection;
@@ -58,7 +61,7 @@ class RoleResource extends RolesRoleResource
 
     public static function getNavigationIcon(): string|BackedEnum|Htmlable|null
     {
-        return null;
+        return 'heroicon-o-shield-check';
     }
 
     public static function getActiveNavigationIcon(): BackedEnum|Htmlable|null|string

@@ -71,19 +71,32 @@ image always builds **committed** code. Releases are automated via
 
 ## Quick start
 
-Pull and run the published image:
+### Build the image
+
+The `metis` image is not published on Docker Hub — build it first:
 
 ```bash
-docker pull metis:latest
-
-docker run -d --name metis -p 80:80 \
-  -v metis-mysql:/var/lib/mysql \
-  -v metis-storage:/var/www/metis/storage \
-  metis:latest
+docker build -t metis:latest docker/production/
 ```
 
-Then open <http://localhost>. To use a different host port, change `-p`, e.g.
-`-p 8080:80` → <http://localhost:8080>.
+The build clones the Metis repository, installs Composer dependencies,
+compiles front-end assets, and runs the ERP installer. It takes several minutes.
+
+### Run the container
+
+For local testing over plain HTTP, set `APP_ENV=local` to avoid automatic
+HTTPS redirects (see [HTTP vs HTTPS](#http-vs-https)):
+
+```bash
+docker run -d --name metis -p 80:80 -e APP_ENV=local metis:latest
+```
+
+Then open <http://localhost>. The admin panel is at <http://localhost/admin/login>.
+
+Default credentials: `admin@example.com` / `password`
+
+To use a different host port, change `-p`, e.g. `-p 8080:80` →
+<http://localhost:8080>.
 
 ## Building the image
 

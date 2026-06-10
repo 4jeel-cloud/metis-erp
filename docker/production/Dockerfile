@@ -47,18 +47,8 @@ RUN apt-get update && apt-get install -y \
         php-pear \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pecl channel-update pecl.php.net \
-    && mkdir -p /tmp/imagick-build && cd /tmp/imagick-build \
-    && pecl download imagick \
-    && tar xzf imagick-*.tgz \
-    && cd imagick-*/ \
-    && phpize${PHP_VERSION} \
-    && ./configure --with-php-config=/usr/bin/php-config${PHP_VERSION} \
-    && make -j"$(nproc)" \
-    && make install \
-    && echo "extension=imagick.so" > /etc/php/${PHP_VERSION}/mods-available/imagick.ini \
-    && phpenmod -v ${PHP_VERSION} imagick \
-    && rm -rf /tmp/imagick-build
+RUN apt-get update && apt-get install -y php8.4-imagick \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - \
     && apt-get install -y nodejs \

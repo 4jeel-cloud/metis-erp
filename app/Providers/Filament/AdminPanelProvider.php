@@ -40,7 +40,7 @@ class AdminPanelProvider extends PanelProvider
             ->favicon(asset('images/favicon.png'))
             ->brandLogo(asset('images/logo-light.png'))
             ->darkModeBrandLogo(asset('images/logo-dark.png'))
-            ->brandLogoHeight('2.5rem')
+            ->brandLogoHeight('5rem')
             ->passwordReset()
             ->emailVerification()
             ->profile()

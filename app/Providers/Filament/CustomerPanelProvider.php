@@ -30,7 +30,7 @@ class CustomerPanelProvider extends PanelProvider
             ->favicon(asset('images/favicon.png'))
             ->brandLogo(asset('images/logo-light.png'))
             ->darkModeBrandLogo(asset('images/logo-dark.png'))
-            ->brandLogoHeight('2.5rem')
+            ->brandLogoHeight('4rem')
             ->colors([
                 'primary' => Color::hex('#E31E24'),
             ])
