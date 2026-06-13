@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -20,8 +19,28 @@ return new class extends Migration
 
     private function repointForeignKey(string $referencedTable): void
     {
-        $this->dropForeignKeysOnBankAccountId();
+        $driver = DB::connection()->getDriverName();
 
+        if ($driver === 'mysql') {
+            $this->dropForeignKeysOnBankAccountId();
+
+            $this->cleanupOrphanedRecords($referencedTable);
+
+            if (! $this->hasForeignKeyTo($referencedTable)) {
+                Schema::table('accounts_journals', function (Blueprint $table) use ($referencedTable) {
+                    $table->foreign('bank_account_id')
+                        ->references('id')
+                        ->on($referencedTable)
+                        ->restrictOnDelete();
+                });
+            }
+        } else {
+            $this->cleanupOrphanedRecords($referencedTable);
+        }
+    }
+
+    private function cleanupOrphanedRecords(string $referencedTable): void
+    {
         DB::table('accounts_journals')
             ->whereNotNull('bank_account_id')
             ->whereNotExists(function ($query) use ($referencedTable) {
@@ -30,17 +49,6 @@ return new class extends Migration
                     ->whereColumn("{$referencedTable}.id", 'accounts_journals.bank_account_id');
             })
             ->update(['bank_account_id' => null]);
-
-        if ($this->hasForeignKeyTo($referencedTable)) {
-            return;
-        }
-
-        Schema::table('accounts_journals', function (Blueprint $table) use ($referencedTable) {
-            $table->foreign('bank_account_id')
-                ->references('id')
-                ->on($referencedTable)
-                ->restrictOnDelete();
-        });
     }
 
     private function dropForeignKeysOnBankAccountId(): void
@@ -65,7 +73,7 @@ return new class extends Migration
             ->exists();
     }
 
-    private function getForeignConstraintNames(): Collection
+    private function getForeignConstraintNames(): array
     {
         return DB::table('information_schema.KEY_COLUMN_USAGE')
             ->select('CONSTRAINT_NAME')
@@ -73,6 +81,7 @@ return new class extends Migration
             ->where('TABLE_NAME', 'accounts_journals')
             ->where('COLUMN_NAME', 'bank_account_id')
             ->whereNotNull('REFERENCED_TABLE_NAME')
-            ->pluck('CONSTRAINT_NAME');
+            ->pluck('CONSTRAINT_NAME')
+            ->toArray();
     }
 };

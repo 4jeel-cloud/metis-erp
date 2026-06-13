@@ -31,6 +31,12 @@ return [
     ],
 
     'actions' => [
+        'download' => [
+            'title'       => 'Download',
+            'heading'     => 'Install Plugin :name',
+            'description' => "Are you sure you want to download and install the ':name' plugin? This will run migrations and seeders.",
+            'submit'      => 'Download & Install',
+        ],
         'install' => [
             'title'       => 'Install',
             'heading'     => 'Install Plugin :name',

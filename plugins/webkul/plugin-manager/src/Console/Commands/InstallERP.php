@@ -30,7 +30,12 @@ class InstallERP extends Command
         {--force : Force reinstallation without confirmation}
         {--admin-name= : Admin user name}
         {--admin-email= : Admin user email}
-        {--admin-password= : Admin user password}';
+        {--admin-password= : Admin user password}
+        {--skip-migrations : Skip database migrations}
+        {--skip-roles : Skip roles and permissions generation}
+        {--skip-storage-link : Skip storage link creation}
+        {--skip-seeders : Skip database seeding}
+        {--skip-admin : Skip admin user creation}';
 
     /**
      * The console command description.
@@ -57,21 +62,48 @@ class InstallERP extends Command
 
         $this->info('🚀 Starting ERP System Installation...');
 
-        $this->runMigrations();
+        try {
+            if (! $this->option('skip-migrations')) {
+                $this->runMigrations();
+            } else {
+                $this->line('⏭️  Skipping migrations.');
+            }
 
-        $this->generateRolesAndPermissions();
+            if (! $this->option('skip-roles')) {
+                $this->generateRolesAndPermissions();
+            } else {
+                $this->line('⏭️  Skipping roles and permissions.');
+            }
 
-        $this->storageLink();
+            if (! $this->option('skip-storage-link')) {
+                $this->storageLink();
+            } else {
+                $this->line('⏭️  Skipping storage link.');
+            }
 
-        $this->runSeeder();
+            if (! $this->option('skip-seeders')) {
+                $this->runSeeder();
+            } else {
+                $this->line('⏭️  Skipping seeders.');
+            }
 
-        $this->createAdminUser();
+            if (! $this->option('skip-admin')) {
+                $this->createAdminUser();
+            } else {
+                $this->line('⏭️  Skipping admin user creation.');
+            }
 
-        $this->markAsInstalled();
+            $this->markAsInstalled();
 
-        Event::dispatch('metis.installed');
+            Event::dispatch('metis.installed');
 
-        $this->info('🎉 ERP System installation completed successfully!');
+            $this->info('🎉 ERP System installation completed successfully!');
+        } catch (\Throwable $e) {
+            $this->error("❌ Installation failed: {$e->getMessage()}");
+            $this->error("  File: {$e->getFile()}:{$e->getLine()}");
+
+            return 1;
+        }
     }
 
     /**
@@ -332,8 +364,12 @@ class InstallERP extends Command
             return 'The email address must be valid.';
         }
 
+        if ($this->option('force') && $userModel::where('email', $email)->exists()) {
+            return null;
+        }
+
         if ($userModel::where('email', $email)->exists()) {
-            return 'A user with this email address already exists.';
+            return 'A user with this email address already exists. Use --force to update existing.';
         }
 
         return null;
@@ -344,7 +380,11 @@ class InstallERP extends Command
      */
     protected function validateAdminPassword(string $password): ?string
     {
-        return strlen($password) >= 8 ? null : 'The password must be at least 8 characters long.';
+        if (strlen($password) < 8) {
+            return 'The password must be at least 8 characters long.';
+        }
+
+        return null;
     }
 
     /**

@@ -96,25 +96,43 @@ Ensure your development environment meets the following requirements:
 
 ## ⚡ Quick Start
 
-Get Metis ERP up and running in just 4 simple steps:
+### Development (Local / Windows / macOS / Linux)
 
-### Step 1: Clone the Repository
+#### Prerequisites
+- **PHP** 8.3+ with extensions: bcmath, ctype, curl, fileinfo, gd, json, mbstring, openssl, pdo, pdo_sqlite, xml, zip
+- **Composer** 2.0+ — use the bundled `composer.phar` if not globally installed
+- **Node.js** 18+ and **npm**
+- **SQLite** (default) or **MySQL** 8.0+
+
+#### Step 1: Clone
 
 ```bash
 git clone https://github.com/4jeel-cloud/aureuserp.git
 cd aureuserp
 ```
 
-### Step 2: Install Dependencies
+#### Step 2: Install PHP & JS Dependencies
 
 ```bash
-composer install
+php composer.phar install
+npm install
 ```
 
-### Step 3: Run the Installation
+#### Step 3: Configure Environment
 
 ```bash
-php artisan erp:install
+cp .env.example .env
+# Edit .env if needed — DB_CONNECTION=sqlite is the default.
+# For MySQL, uncomment and set DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD.
+```
+
+#### Step 4: Run Installation
+
+```bash
+php artisan erp:install --no-interaction \
+    --admin-name="Admin" \
+    --admin-email="admin@example.com" \
+    --admin-password="password"
 ```
 
 **What happens during installation:**
@@ -123,15 +141,142 @@ php artisan erp:install
 ✅ Core seeders populate initial data  
 ✅ Roles & permissions are generated (via Filament Shield)  
 ✅ Admin account is created  
-✅ Environment configuration is set up
+✅ Storage directory linked
 
-### Step 4: Start the Development Server
+#### Step 5: Start Dev Servers
 
 ```bash
-php artisan serve
+# Option A — All at once (server + queue + logs + Vite):
+composer dev
+
+# Option B — Manually:
+php artisan serve              # → http://127.0.0.1:8000
+npm run dev                    # → http://localhost:5173 (Vite hot-reload)
+php artisan queue:listen       # Queue worker
+php artisan pail               # Log viewer
 ```
 
-Visit `http://localhost:8000` and log in with your admin credentials!
+#### Default Credentials
+
+| Email | Password |
+|-------|----------|
+| `admin@example.com` | `password` |
+
+#### Reinstalling
+
+```bash
+php artisan erp:install --force --no-interaction \
+    --admin-name="Admin" \
+    --admin-email="admin@example.com" \
+    --admin-password="password"
+```
+
+To skip specific steps, append flags like `--skip-migrations`, `--skip-roles`, `--skip-seeders`, or `--skip-admin`.
+
+---
+
+### Production (Docker)
+
+Build a self-contained production image with MySQL, Nginx, PHP-FPM, queue worker, and scheduler — all managed by Supervisor.
+
+#### Prerequisites
+- **Docker** 24+
+- **Docker BuildKit** (enabled by default in recent versions)
+
+#### Build the Image
+
+```bash
+docker build -f docker/production/Dockerfile -t metis-erp:latest .
+```
+
+This builds an Ubuntu 24.04 image containing:
+- PHP 8.4-FPM with all required extensions
+- Nginx with production config (gzip, caching headers, security headers)
+- MySQL 8.0 with a pre-seeded database (initialized at build time)
+- Supervisor managing 5 processes: MySQL, PHP-FPM, Nginx, queue worker, scheduler
+
+**Build arguments** (all optional):
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `ADMIN_NAME` | `Administrator` | Admin user display name |
+| `ADMIN_EMAIL` | `admin@example.com` | Admin login email |
+| `ADMIN_PASSWORD` | `password` | Admin login password |
+| `APP_REF` | `master` | Git branch/tag to clone |
+| `PHP_VERSION` | `8.4` | PHP version |
+| `NODE_VERSION` | `22` | Node.js version |
+
+#### Run with Internal MySQL (default)
+
+The database is baked into the image — no external dependencies:
+
+```bash
+docker run -d --name metis-erp \
+    -p 80:80 \
+    -p 443:443 \
+    -e APP_URL=http://localhost \
+    metis-erp:latest
+```
+
+#### Run with External MySQL (e.g. RDS, Cloud SQL, managed DB)
+
+```bash
+docker run -d --name metis-erp \
+    -p 80:80 \
+    -e DB_HOST=your-db-host.internal \
+    -e DB_PORT=3306 \
+    -e DB_DATABASE=metis \
+    -e DB_USERNAME=metis \
+    -e DB_PASSWORD=your-secure-password \
+    -e APP_URL=https://your-domain.com \
+    -e APP_KEY=base64:your-32-byte-key== \
+    metis-erp:latest
+```
+
+The entrypoint will:
+1. Wait up to 60s for the external MySQL to be reachable
+2. Auto-detect if tables exist — if not, run a full installation
+3. Generate an `APP_KEY` if none is provided
+
+#### All Runtime Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DB_HOST` | `127.0.0.1` | Database host (use external host for managed DB) |
+| `DB_PORT` | `3306` | Database port |
+| `DB_DATABASE` | `metis` | Database name |
+| `DB_USERNAME` | `metis` | Database user |
+| `DB_PASSWORD` | `metis` | Database password |
+| `APP_ENV` | `production` | Application environment |
+| `APP_DEBUG` | `false` | Debug mode (set to `true` for troubleshooting) |
+| `APP_URL` | `http://localhost` | Application URL |
+| `APP_KEY` | *(auto-generated)* | Laravel app key (32-byte base64) |
+| `APP_NAME` | `Metis` | Application display name |
+| `APP_LOCALE` | `en` | Default language |
+| `APP_CURRENCY` | `USD` | Default currency |
+| `APP_TIMEZONE` | `UTC` | Application timezone |
+
+#### Docker Compose (Development)
+
+For local development with Sail (MySQL + Redis + Mailpit):
+
+```bash
+cp .env.example .env
+# Set DB_CONNECTION=mysql, DB_HOST=mysql, DB_USERNAME=sail, DB_PASSWORD=password
+./vendor/bin/sail up -d
+./vendor/bin/sail artisan erp:install --no-interaction
+```
+
+#### Health Check
+
+The container includes a built-in health endpoint:
+
+```bash
+curl http://localhost/health
+# → {"status":"healthy","timestamp":"...","checks":{"app":true,"database":true,"cache":true}}
+```
+
+The Docker HEALTHCHECK polls this endpoint every 30s (60s grace period, 3 retries). If it fails, the container is marked `unhealthy`.
 
 ---
 

@@ -124,84 +124,10 @@ class PluginResource extends Resource
                 'xl'  => 3,
                 '2xl' => 4,
             ])
+            ->extraAttributes(['class' => 'plugin-card-grid'])
             ->recordActions([
                 ActionGroup::make([
                     ViewAction::make()->icon('heroicon-o-eye'),
-
-                    Action::make('install')
-                        ->label(__('plugin-manager::filament/resources/plugin.actions.install.title'))
-                        ->icon('heroicon-o-arrow-down-tray')
-                        ->color('success')
-                        ->visible(fn ($record) => ! $record->is_installed)
-                        ->requiresConfirmation()
-                        ->modalHeading(fn ($record) => __('plugin-manager::filament/resources/plugin.actions.install.heading', ['name' => $record->name]))
-                        ->modalDescription(fn ($record) => __('plugin-manager::filament/resources/plugin.actions.install.description', ['name' => $record->name]))
-                        ->modalSubmitActionLabel(__('plugin-manager::filament/resources/plugin.actions.install.submit'))
-                        ->action(function ($record) {
-                            DB::beginTransaction();
-
-                            try {
-                                $phpPath = self::getPhpExecutablePath();
-
-                                $php = escapeshellarg($phpPath);
-
-                                $artisan = escapeshellarg(base_path('artisan'));
-
-                                $commandName = escapeshellarg("{$record->name}:install");
-
-                                $cmd = "timeout 300 $php $artisan $commandName 2>&1";
-
-                                $cmd = self::buildTimeoutCommand(300, "$php $artisan $commandName 2>&1");
-
-                                $output = [];
-
-                                $exitCode = 0;
-
-                                exec($cmd, $output, $exitCode);
-
-                                if ($exitCode === 124) {
-                                    throw new RuntimeException('Installation timed out after 5 minutes.');
-                                }
-
-                                if ($exitCode !== 0) {
-                                    $errorOutput = implode(PHP_EOL, array_slice($output, -10));
-
-                                    throw new RuntimeException(
-                                        "Installation failed with exit code {$exitCode}.".
-                                            ($errorOutput ? " Last output: {$errorOutput}" : '')
-                                    );
-                                }
-
-                                $record->update([
-                                    'is_installed' => true,
-                                    'is_active'    => true,
-                                ]);
-
-                                DB::commit();
-
-                                Notification::make()
-                                    ->title(__('plugin-manager::filament/resources/plugin.notifications.installed.title'))
-                                    ->body(__('plugin-manager::filament/resources/plugin.notifications.installed.body', ['name' => $record->name]))
-                                    ->success()
-                                    ->send();
-                            } catch (Throwable $e) {
-                                DB::rollBack();
-
-                                logger()->error('Plugin installation failed', [
-                                    'plugin' => $record->name,
-                                    'error'  => $e->getMessage(),
-                                    'trace'  => $e->getTraceAsString(),
-                                ]);
-
-                                Notification::make()
-                                    ->title(__('plugin-manager::filament/resources/plugin.notifications.installed-failed.title'))
-                                    ->body($e->getMessage())
-                                    ->danger()
-                                    ->persistent()
-                                    ->send();
-                            }
-                        })
-                        ->after(fn () => redirect(self::getUrl('index'))),
 
                     Action::make('uninstall')
                         ->label(__('plugin-manager::filament/resources/plugin.actions.uninstall.title'))
@@ -246,6 +172,80 @@ class PluginResource extends Resource
                 ]),
             ], position: RecordActionsPosition::BeforeColumns)
             ->recordActionsAlignment('end')
+            ->recordActions([
+                Action::make('download')
+                    ->label(__('plugin-manager::filament/resources/plugin.actions.download.title'))
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->visible(fn ($record) => ! $record->is_installed)
+                    ->requiresConfirmation()
+                    ->modalHeading(fn ($record) => __('plugin-manager::filament/resources/plugin.actions.download.heading', ['name' => $record->name]))
+                    ->modalDescription(fn ($record) => __('plugin-manager::filament/resources/plugin.actions.download.description', ['name' => $record->name]))
+                    ->modalSubmitActionLabel(__('plugin-manager::filament/resources/plugin.actions.download.submit'))
+                    ->action(function ($record) {
+                        DB::beginTransaction();
+
+                        try {
+                            $phpPath = self::getPhpExecutablePath();
+
+                            $php = escapeshellarg($phpPath);
+
+                            $artisan = escapeshellarg(base_path('artisan'));
+
+                            $commandName = escapeshellarg("{$record->name}:install");
+
+                            $cmd = self::buildTimeoutCommand(300, "$php $artisan $commandName 2>&1");
+
+                            $output = [];
+
+                            $exitCode = 0;
+
+                            exec($cmd, $output, $exitCode);
+
+                            if ($exitCode === 124) {
+                                throw new RuntimeException('Installation timed out after 5 minutes.');
+                            }
+
+                            if ($exitCode !== 0) {
+                                $errorOutput = implode(PHP_EOL, array_slice($output, -10));
+
+                                throw new RuntimeException(
+                                    "Installation failed with exit code {$exitCode}.".
+                                        ($errorOutput ? " Last output: {$errorOutput}" : '')
+                                );
+                            }
+
+                            $record->update([
+                                'is_installed' => true,
+                                'is_active'    => true,
+                            ]);
+
+                            DB::commit();
+
+                            Notification::make()
+                                ->title(__('plugin-manager::filament/resources/plugin.notifications.installed.title'))
+                                ->body(__('plugin-manager::filament/resources/plugin.notifications.installed.body', ['name' => $record->name]))
+                                ->success()
+                                ->send();
+                        } catch (Throwable $e) {
+                            DB::rollBack();
+
+                            logger()->error('Plugin installation failed', [
+                                'plugin' => $record->name,
+                                'error'  => $e->getMessage(),
+                                'trace'  => $e->getTraceAsString(),
+                            ]);
+
+                            Notification::make()
+                                ->title(__('plugin-manager::filament/resources/plugin.notifications.installed-failed.title'))
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->persistent()
+                                ->send();
+                        }
+                    })
+                    ->after(fn () => redirect(self::getUrl('index'))),
+            ], position: RecordActionsPosition::AfterContent)
             ->defaultSort('sort', 'asc')
             ->paginated([16, 24, 32]);
     }

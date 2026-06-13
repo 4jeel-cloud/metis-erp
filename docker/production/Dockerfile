@@ -12,6 +12,8 @@ ARG ADMIN_PASSWORD=password
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 RUN apt-get update && apt-get install -y \
         apt-transport-https \
         ca-certificates \
@@ -41,6 +43,7 @@ RUN apt-get update && apt-get install -y \
         php${PHP_VERSION}-intl \
         php${PHP_VERSION}-mbstring \
         php${PHP_VERSION}-mysql \
+        php${PHP_VERSION}-redis \
         php${PHP_VERSION}-soap \
         php${PHP_VERSION}-xml \
         php${PHP_VERSION}-zip \
@@ -69,18 +72,21 @@ RUN git clone --depth 1 --branch ${APP_REF} ${REPO_URL} . \
         --prefer-dist \
         --optimize-autoloader \
         --no-scripts \
-    && rm -rf .git /root/.composer/cache
+    && rm -rf /root/.composer/cache
 
 RUN cp .env.example .env \
     && sed -i 's/^APP_DEBUG=.*/APP_DEBUG=false/' .env \
     && sed -i 's/^DB_CONNECTION=.*/DB_CONNECTION=mysql/' .env \
     && sed -i 's/^CACHE_STORE=.*/CACHE_STORE=file/' .env \
+    && sed -i 's/^SESSION_DRIVER=.*/SESSION_DRIVER=file/' .env \
+    && sed -i 's/^QUEUE_CONNECTION=.*/QUEUE_CONNECTION=database/' .env \
     && sed -i 's/^# *DB_HOST=.*/DB_HOST=127.0.0.1/' .env \
     && sed -i 's/^# *DB_PORT=.*/DB_PORT=3306/' .env \
     && sed -i 's/^# *DB_DATABASE=.*/DB_DATABASE=metis/' .env \
     && sed -i 's/^# *DB_USERNAME=.*/DB_USERNAME=metis/' .env \
     && sed -i 's/^# *DB_PASSWORD=.*/DB_PASSWORD=metis/' .env \
-    && sed -i 's|^APP_URL=.*|APP_URL=http://localhost|' .env
+    && sed -i 's|^APP_URL=.*|APP_URL=http://localhost|' .env \
+    && sed -i 's/^REDIS_CLIENT=.*/REDIS_CLIENT=predis/' .env
 
 RUN npm ci --no-audit --no-fund \
     && npm run build \
@@ -121,7 +127,6 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 RUN apt-get purge -y git nodejs \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
 
 EXPOSE 80
 

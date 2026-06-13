@@ -82,13 +82,13 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('partners_partners', function (Blueprint $table) {
-            $table->dropForeign('fk_partners_account_payable');
-            $table->dropForeign('fk_partners_account_receivable');
-            $table->dropForeign('fk_partners_account_position');
-            $table->dropForeign('fk_partners_payment_term');
-            $table->dropForeign('fk_partners_supplier_payment_term');
-            $table->dropForeign('fk_partners_inbound_payment_method');
-            $table->dropForeign('fk_partners_outbound_payment_method');
+            $table->dropForeign(['property_account_payable_id']);
+            $table->dropForeign(['property_account_receivable_id']);
+            $table->dropForeign(['property_account_position_id']);
+            $table->dropForeign(['property_payment_term_id']);
+            $table->dropForeign(['property_supplier_payment_term_id']);
+            $table->dropForeign(['property_inbound_payment_method_line_id']);
+            $table->dropForeign(['property_outbound_payment_method_line_id']);
 
             $table->dropColumn([
                 'message_bounce',

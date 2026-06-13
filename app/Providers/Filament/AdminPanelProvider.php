@@ -40,7 +40,7 @@ class AdminPanelProvider extends PanelProvider
             ->favicon(asset('images/favicon.png'))
             ->brandLogo(asset('images/logo-light.png'))
             ->darkModeBrandLogo(asset('images/logo-dark.png'))
-            ->brandLogoHeight('5rem')
+            ->brandLogoHeight('2rem')
             ->passwordReset()
             ->emailVerification()
             ->profile()
@@ -48,6 +48,19 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::hex('#E31E24'),
             ])
             ->unsavedChangesAlerts()
+            ->renderHook('panels::styles', fn (): string => <<<EOF
+<style>
+    .plugin-card-grid .fi-ta-record-actions-after-content {
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+    }
+    .plugin-card-grid .fi-ta-record:hover .fi-ta-record-actions-after-content,
+    .plugin-card-grid .fi-ta-record:focus-within .fi-ta-record-actions-after-content {
+        opacity: 1;
+    }
+</style>
+EOF
+            )
             ->topNavigation()
             ->maxContentWidth(Width::Full)
             ->databaseNotifications()

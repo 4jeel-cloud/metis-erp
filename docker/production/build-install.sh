@@ -1,4 +1,5 @@
-set -e
+#!/bin/bash
+set -euo pipefail
 
 APP_DIR="/var/www/metis"
 
@@ -7,17 +8,21 @@ ADMIN_EMAIL="${ADMIN_EMAIL:-admin@example.com}"
 ADMIN_PASSWORD="${ADMIN_PASSWORD:-password}"
 
 echo "[build-install] Initialising MySQL data directory..."
-mkdir -p /run/mysqld
-rm -rf /var/lib/mysql && mkdir -p /var/lib/mysql
+mkdir -p /run/mysqld /var/lib/mysql
 chown -R mysql:mysql /run/mysqld /var/lib/mysql
-mysqld --initialize-insecure --user=mysql --datadir=/var/lib/mysql
+
+if [ ! -f /var/lib/mysql/ibdata1 ]; then
+    mysqld --initialize-insecure --user=mysql --datadir=/var/lib/mysql
+    echo "[build-install] MySQL data directory initialized."
+else
+    echo "[build-install] MySQL data directory already exists, skipping initialization."
+fi
 
 echo "[build-install] Starting MySQL..."
-mysqld --user=mysql --datadir=/var/lib/mysql &
+mysqld --user=mysql --datadir=/var/lib/mysql --skip-log-bin &
 MYSQL_PID=$!
 
 echo "[build-install] Waiting for MySQL to be ready..."
-
 for i in $(seq 1 60); do
     if mysqladmin --silent ping 2>/dev/null; then
         echo "[build-install] MySQL is ready."
@@ -25,6 +30,7 @@ for i in $(seq 1 60); do
     fi
     if [ "$i" -eq 60 ]; then
         echo "[build-install] ERROR: MySQL did not start within 60 seconds."
+        tail -20 /var/log/mysql/error.log 2>/dev/null || true
         exit 1
     fi
     sleep 1
@@ -45,7 +51,7 @@ php artisan erp:install --force --no-interaction \
     --admin-password="$ADMIN_PASSWORD"
 
 echo "[build-install] Shutting down MySQL..."
-mysqladmin -u root shutdown
+mysqladmin -u root shutdown || true
 wait "$MYSQL_PID" 2>/dev/null || true
 
 chown -R mysql:mysql /var/lib/mysql

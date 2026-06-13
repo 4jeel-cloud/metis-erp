@@ -244,4 +244,70 @@ protected function isAccessible(User $user, ?string $path = null): bool
 - Always use existing Tailwind conventions; check project patterns before adding new ones.
 - IMPORTANT: Always use `search-docs` tool for version-specific Tailwind CSS documentation and updated code examples. Never rely on training data.
 - IMPORTANT: Activate `tailwindcss-development` every time you're working with a Tailwind CSS or styling-related task.
+
+---
+
+# Dev & Prod Setup
+
+## Development (Windows with SQLite)
+
+```bash
+# 1. Install dependencies
+php composer.phar install
+npm install
+
+# 2. Configure environment
+copy .env.example .env
+# DB_CONNECTION=sqlite is default — no DB server needed
+
+# 3. Generate key & create SQLite DB
+php artisan key:generate
+echo "" > database/database.sqlite
+
+# 4. Full install (migrate, seed, create admin)
+php artisan erp:install --no-interaction \
+    --admin-name="Admin" \
+    --admin-email="admin@example.com" \
+    --admin-password="password"
+
+# 5. Start dev servers
+composer dev
+# Or manually:
+#   php artisan serve          → http://127.0.0.1:8000
+#   npm run dev                → http://localhost:5173 (Vite)
+#   php artisan queue:listen
+#   php artisan pail
+```
+
+- **Login:** `admin@example.com` / `password`
+- To reinstall from scratch: `php artisan erp:install --force --no-interaction`
+- Skip steps with: `--skip-migrations --skip-roles --skip-seeders --skip-admin --skip-storage-link`
+
+## Production (Docker)
+
+```bash
+# Build image (includes DB initialization, migrations, admin creation)
+docker build -f docker/production/Dockerfile -t metis-erp:latest .
+
+# Run with internal MySQL (default — DB baked into image)
+docker run -d --name metis-erp -p 80:80 metis-erp:latest
+
+# Run with external MySQL (e.g. RDS, Cloud SQL)
+docker run -d --name metis-erp \
+    -p 80:80 \
+    -e DB_HOST=your-db-host \
+    -e DB_PORT=3306 \
+    -e DB_DATABASE=metis \
+    -e DB_USERNAME=metis \
+    -e DB_PASSWORD=your-password \
+    -e APP_URL=http://your-domain.com \
+    -e APP_KEY=base64:your-32-byte-key== \
+    metis-erp:latest
+```
+
+### Docker image features:
+- **Resilient entrypoint:** auto-generates APP_KEY if missing, auto-runs migrations for fresh external DB
+- **Health check:** `GET /health` returns JSON with app, database, and cache status
+- **Supervisor-managed:** nginx, PHP-FPM, MySQL (internal), queue worker, scheduler
+- **Zero-downtime restarts** with `autorestart=true` on all services
 </laravel-boost-guidelines>
