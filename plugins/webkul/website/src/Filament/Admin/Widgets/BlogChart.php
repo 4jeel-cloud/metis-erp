@@ -25,9 +25,15 @@ class BlogChart extends ChartWidget
     {
         $filters = $this->filters;
 
+        $driver = DB::connection()->getDriverName();
+
+        $dateFormat = $driver === 'sqlite'
+            ? "strftime('%Y-%m', created_at)"
+            : "DATE_FORMAT(created_at, '%Y-%m')";
+
         $query = Post::query()
             ->select(
-                DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month_key'),
+                DB::raw("{$dateFormat} as month_key"),
                 'is_published',
                 DB::raw('COUNT(*) as count')
             );
